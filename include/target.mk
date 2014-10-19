@@ -199,7 +199,7 @@ else ifneq ($(strip $(CFG_TARGET)),)
   $(error CONFIG_TARGET=$(CFG_TARGET) is invalid. Valid: target|subtarget|subtarget_target|env)
 endif
 
-__linux_confcmd = $(2) $(patsubst %,+,$(wordlist 2,9999,$(1))) $(1)
+__linux_confcmd = $(2) $(patsubst %,+,$(wordlist 2,$(words $(1)),$(1))) $(1)
 
 LINUX_CONF_CMD = $(SCRIPT_DIR)/kconfig.pl $(call __linux_confcmd,$(LINUX_KCONFIG_LIST))
 LINUX_RECONF_CMD = $(SCRIPT_DIR)/kconfig.pl $(call __linux_confcmd,$(LINUX_RECONFIG_LIST))
