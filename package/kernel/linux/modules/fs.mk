@@ -111,13 +111,15 @@ define KernelPackage/fs-cifs
   KCONFIG:= \
 	CONFIG_CIFS \
 	CONFIG_CIFS_DFS_UPCALL=n \
-	CONFIG_CIFS_UPCALL=n
+	CONFIG_CIFS_UPCALL=n \
+	CONFIG_CIFS_FSCACHE=y
   FILES:= \
 	$(LINUX_DIR)/fs/cifs/cifs.ko@lt6.1 \
 	$(LINUX_DIR)/fs/smb/client/cifs.ko@ge6.1
   AUTOLOAD:=$(call AutoLoad,30,cifs)
   $(call AddDepends/nls)
   DEPENDS+= \
+    +kmod-fs-fscache \
     +kmod-fs-smbfs-common \
     +kmod-crypto-md5 \
     +kmod-crypto-sha256 \
@@ -439,10 +441,12 @@ define KernelPackage/fs-nfs
   SUBMENU:=$(FS_MENU)
   TITLE:=NFS filesystem client support
   DEPENDS:=+kmod-fs-nfs-common +kmod-dnsresolver
+  DEPENDS:=+kmod-fs-nfs-common +kmod-dnsresolver +kmod-fs-fscache
   KCONFIG:= \
 	CONFIG_NFS_FS \
 	CONFIG_NFS_USE_LEGACY_DNS=n \
-	CONFIG_NFS_USE_NEW_IDMAPPER=n
+	CONFIG_NFS_USE_NEW_IDMAPPER=n \
+	CONFIG_NFS_FSCACHE=y
   FILES:= \
 	$(LINUX_DIR)/fs/nfs/nfs.ko
   AUTOLOAD:=$(call AutoLoad,40,nfs)
