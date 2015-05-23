@@ -260,9 +260,9 @@ package/symlinks-clean:
 help:
 	cat README.md
 
-distclean:
-	rm -rf bin build_dir .ccache .config* dl feeds key-build* logs package/feeds staging_dir tmp
-	@$(_SINGLE)$(SUBMAKE) -C scripts/config clean
+#distclean:
+#	rm -rf bin build_dir .ccache .config* dl feeds key-build* logs package/feeds staging_dir tmp
+#	@$(_SINGLE)$(SUBMAKE) -C scripts/config clean
 
 ifeq ($(findstring v,$(DEBUG)),)
   .SILENT: symlinkclean clean dirclean distclean config-clean download help tmpinfo-clean .config scripts/config/mconf scripts/config/conf menuconfig $(STAGING_DIR_HOST)/.prereq-build tmp/.prereq-package prepare-tmpinfo
