@@ -37,7 +37,7 @@ define KernelPackage/fs-afs
 	CONFIG_AFS_DEBUG=n \
 	CONFIG_AFS_FSCACHE=y
   FILES:=$(LINUX_DIR)/fs/afs/kafs.ko
-  AUTOLOAD:=$(call AutoLoad,30,kafs)
+  ### AUTOLOAD:=$(call AutoLoad,30,kafs)
 endef
 
 define KernelPackage/fs-afs/description
