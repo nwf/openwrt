@@ -1213,7 +1213,6 @@ endef
 
 $(eval $(call KernelPackage,nlmon))
 
-
 define KernelPackage/mdio
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=MDIO (clause 45) PHY support
@@ -1258,3 +1257,25 @@ define KernelPackage/netlink-diag/description
 endef
 
 $(eval $(call KernelPackage,netlink-diag))
+
+# Via https://dev.openwrt.org/attachment/ticket/1733/netconsole.patch
+define KernelPackage/netconsole 
+  TITLE:=Network console logging support 
+  FILES:=$(LINUX_DIR)/drivers/net/netconsole.$(LINUX_KMOD_SUFFIX) 
+  DEFAULT:=n 
+  KCONFIG:= \
+    CONFIG_NETCONSOLE=m \
+    CONFIG_NETCONSOLE_DYNAMIC=y
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+endef  
+
+define KernelPackage/netconsole/description
+  Log kernel messager over the network. Further documentation\\\ 
+  available in the Linux kernel sources.\\\ 
+  You have to run make kernel_menuconfig and add the following\\\ 
+  line manually (with the correct vaules), in "Kernel Hacking",\\\ 
+  or in the bootloader configuration.\\\ 
+  netconsole=[src-port]@[src-ip]/[<dev>],[tgt-port]@<tgt-ip>/[tgt-macaddr] 
+endef
+
+$(eval $(call KernelPackage,netconsole)) 
