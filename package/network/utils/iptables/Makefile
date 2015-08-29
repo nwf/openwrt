@@ -252,6 +252,19 @@ iptables extensions for extra NAT targets.
   - NETMAP
 endef
 
+define Package/iptables-mod-nfacct
+$(call Package/iptables/Module, +kmod-nfnetlink-acct)
+  TITLE:=Netfilter NFACCT target
+endef
+
+define Package/iptables-mod-nfacct/description
+ iptables extension for user-space accounting via NFNETLINK.
+
+ Includes:
+  - libxt_NFACCT
+
+endef
+
 define Package/iptables-mod-nflog
 $(call Package/iptables/Module, +kmod-nfnetlink-log +kmod-ipt-nflog)
   TITLE:=Netfilter NFLOG target
@@ -770,6 +783,7 @@ $(eval $(call BuildPlugin,iptables-mod-socket,$(IPT_SOCKET-m)))
 $(eval $(call BuildPlugin,iptables-mod-tproxy,$(IPT_TPROXY-m)))
 $(eval $(call BuildPlugin,iptables-mod-tee,$(IPT_TEE-m)))
 $(eval $(call BuildPlugin,iptables-mod-u32,$(IPT_U32-m)))
+$(eval $(call BuildPlugin,iptables-mod-nfacct,$(IPT_NFACCT-m)))
 $(eval $(call BuildPlugin,iptables-mod-nflog,$(IPT_NFLOG-m)))
 $(eval $(call BuildPlugin,iptables-mod-trace,$(IPT_DEBUG-m)))
 $(eval $(call BuildPlugin,iptables-mod-nfqueue,$(IPT_NFQUEUE-m)))
