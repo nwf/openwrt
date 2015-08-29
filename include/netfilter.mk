@@ -243,6 +243,10 @@ $(eval $(call nf_add,NF_NATHELPER_EXTRA,CONFIG_NF_NAT_IRC, $(P_XT)nf_nat_irc))
 
 $(eval $(call nf_add,IPT_ULOG,CONFIG_IP_NF_TARGET_ULOG, $(P_V4)ipt_ULOG))
 
+# nfacct
+
+$(eval $(call nf_add,IPT_NFACCT,CONFIG_NETFILTER_XT_MATCH_NFACCT, $(P_XT)xt_nfacct))
+
 
 # nflog
 
@@ -288,6 +292,10 @@ $(eval $(call nf_add,IPT_CHECKSUM,CONFIG_NETFILTER_XT_TARGET_CHECKSUM, $(P_XT)xt
 # netlink
 
 $(eval $(call nf_add,NFNETLINK,CONFIG_NETFILTER_NETLINK, $(P_XT)nfnetlink))
+
+# nfacct
+
+$(eval $(call nf_add,NFNETLINK_ACCT,CONFIG_NETFILTER_NETLINK_ACCT, $(P_XT)nfnetlink_acct))
 
 # nflog
 
@@ -406,6 +414,7 @@ IPT_BUILTIN += $(NF_NATHELPER_EXTRA-y)
 IPT_BUILTIN += $(IPT_ULOG-y)
 IPT_BUILTIN += $(IPT_TPROXY-y)
 IPT_BUILTIN += $(NFNETLINK-y)
+IPT_BUILTIN += $(NFNETLINK_ACCT-y)
 IPT_BUILTIN += $(NFNETLINK_LOG-y)
 IPT_BUILTIN += $(NFNETLINK_QUEUE-y)
 IPT_BUILTIN += $(EBTABLES-y)
