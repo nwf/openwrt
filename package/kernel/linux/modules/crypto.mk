@@ -841,7 +841,7 @@ endef
 $(eval $(call KernelPackage,crypto-xts))
 
 define KernelPackage/crypto-mv-cesa
-  TITLE:=Marvell crypto engine
+  TITLE:=Marvell crypto engine (old)
   DEPENDS:=+kmod-crypto-manager @TARGET_kirkwood||TARGET_orion
   KCONFIG:=\
 	CONFIG_CRYPTO_HW=y \
@@ -852,3 +852,17 @@ define KernelPackage/crypto-mv-cesa
 endef
 
 $(eval $(call KernelPackage,crypto-mv-cesa))
+
+define KernelPackage/crypto-marvell-cesa
+  TITLE:=Marvell crypto engine (new)
+  DEPENDS:=+kmod-crypto-manager +kmod-crypto-des \
+	@TARGET_kirkwood||TARGET_orion||TARGET_mvebu
+  KCONFIG:=\
+	CONFIG_CRYPTO_HW=y \
+	CONFIG_CRYPTO_DEV_MARVELL_CESA
+  FILES:=$(LINUX_DIR)/drivers/crypto/marvell/marvell-cesa.ko
+  AUTOLOAD:=$(call AutoLoad,09,marvell-cesa)
+  $(call AddDepends/crypto)
+endef
+
+$(eval $(call KernelPackage,crypto-marvell-cesa))
