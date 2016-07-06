@@ -35,7 +35,7 @@ define Package/openvpn/Default
   URL:=http://openvpn.net
   SUBMENU:=VPN
   MENU:=1
-  DEPENDS:=+kmod-tun +OPENVPN_$(1)_ENABLE_LZO:liblzo +OPENVPN_$(1)_ENABLE_IPROUTE2:ip $(3)
+  DEPENDS:=+kmod-tun +OPENVPN_$(1)_ENABLE_LZO:liblzo +OPENVPN_$(1)_ENABLE_IPROUTE2:ip +OPENVPN_$(1)_ENABLE_PKCS11:opensc-pkcs11-helper $(3)
   VARIANT:=$(1)
 ifeq ($(1),nossl)
   PROVIDES:=openvpn
@@ -82,7 +82,8 @@ define Build/Configure
 		--disable-systemd \
 		--disable-plugins \
 		--disable-debug \
-		--disable-pkcs11 \
+		--enable-password-save \
+		$(if $(CONFIG_OPENVPN_$(BUILD_VARIANT)_ENABLE_PKCS11),--enable,--disable)-pkcs11 \
 		$(if $(CONFIG_OPENVPN_$(BUILD_VARIANT)_ENABLE_LZO),--enable,--disable)-lzo \
 		$(if $(CONFIG_OPENVPN_$(BUILD_VARIANT)_ENABLE_LZ4),--enable,--disable)-lz4 \
 		$(if $(CONFIG_OPENVPN_$(BUILD_VARIANT)_ENABLE_X509_ALT_USERNAME),--enable,--disable)-x509-alt-username \
