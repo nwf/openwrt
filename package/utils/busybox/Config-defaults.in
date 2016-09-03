@@ -2585,7 +2585,7 @@ config BUSYBOX_DEFAULT_WHOIS
 	default n
 config BUSYBOX_DEFAULT_ZCIP
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_UDHCPD
 	bool
 	default n
