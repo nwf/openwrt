@@ -1,0 +1,60 @@
+--- a/uclient-fetch.c	2021-04-03 16:16:07.000000000 +0100
++++ b/uclient-fetch.c	2021-05-04 22:41:38.463353749 +0100
+@@ -44,6 +44,8 @@
+ static const char *user_agent = "uclient-fetch";
+ static const char *post_data;
+ static const char *post_file;
++static const char *custom_header_key;
++static const char *custom_header_value = "";
+ static struct ustream_ssl_ctx *ssl_ctx;
+ static const struct ustream_ssl_ops *ssl_ops;
+ static int quiet = false;
+@@ -342,6 +344,9 @@
+ 
+ 	uclient_http_reset_headers(cl);
+ 	uclient_http_set_header(cl, "User-Agent", user_agent);
++	if (custom_header_key)
++		uclient_http_set_header(cl, custom_header_key, custom_header_value);
++
+ 	if (cur_resume)
+ 		check_resume_offset(cl);
+ 
+@@ -489,6 +494,7 @@
+ 		"	--proxy=on | -Y on		Enable interpretation of proxy env vars (default)\n"
+ 		"	--proxy=off | -Y off |\n"
+ 		"	--no-proxy           		Disable interpretation of proxy env vars\n"
++		"       --header-{key,value} str        Add a custom header key: value to request\n"
+ 		"\n"
+ 		"HTTPS options:\n"
+ 		"	--ca-certificate=<cert>		Load CA certificates from file <cert>\n"
+@@ -541,6 +547,8 @@
+ 	L_CIPHERS,
+ 	L_USER,
+ 	L_PASSWORD,
++	L_CUSTOM_HEADER_KEY,
++	L_CUSTOM_HEADER_VALUE,
+ 	L_USER_AGENT,
+ 	L_POST_DATA,
+ 	L_POST_FILE,
+@@ -558,6 +566,8 @@
+ 	[L_CIPHERS] = { "ciphers", required_argument, NULL, 0 },
+ 	[L_USER] = { "user", required_argument, NULL, 0 },
+ 	[L_PASSWORD] = { "password", required_argument, NULL, 0 },
++	[L_CUSTOM_HEADER_KEY] = { "header-key", required_argument, NULL, 0 },
++	[L_CUSTOM_HEADER_VALUE] = { "header-value", required_argument, NULL, 0 },
+ 	[L_USER_AGENT] = { "user-agent", required_argument, NULL, 0 },
+ 	[L_POST_DATA] = { "post-data", required_argument, NULL, 0 },
+ 	[L_POST_FILE] = { "post-file", required_argument, NULL, 0 },
+@@ -623,6 +633,12 @@
+ 				password = strdupa(optarg);
+ 				memset(optarg, '*', strlen(optarg));
+ 				break;
++			case L_CUSTOM_HEADER_KEY:
++				custom_header_key = optarg;
++				break;
++			case L_CUSTOM_HEADER_VALUE:
++				custom_header_value = optarg;
++				break;
+ 			case L_USER_AGENT:
+ 				user_agent = optarg;
+ 				break;
