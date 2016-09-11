@@ -1,0 +1,60 @@
+--- a/uclient-fetch.c	2016-09-11 18:51:51.686157349 +0000
++++ b/uclient-fetch.c	2016-09-11 18:58:40.998256914 +0000
+@@ -43,6 +43,8 @@
+ static const char *user_agent = "uclient-fetch";
+ static const char *post_data;
+ static const char *post_file;
++static const char *custom_header_key;
++static const char *custom_header_value = "";
+ static struct ustream_ssl_ctx *ssl_ctx;
+ static const struct ustream_ssl_ops *ssl_ops;
+ static int quiet = false;
+@@ -329,6 +331,9 @@
+ 
+ 	uclient_http_reset_headers(cl);
+ 	uclient_http_set_header(cl, "User-Agent", user_agent);
++	if (custom_header_key)
++		uclient_http_set_header(cl, custom_header_key, custom_header_value);
++
+ 	if (cur_resume)
+ 		check_resume_offset(cl);
+ 
+@@ -457,6 +462,7 @@
+ 		"	--spider|-s			Spider mode - only check file existence\n"
+ 		"	--timeout=N|-T N		Set connect/request timeout to N seconds\n"
+ 		"	--proxy=on|off|-Y on|off	Enable/disable env var configured proxy\n"
++		"	--header-{key,value} str	Add a custom header key: value to request\n"
+ 		"\n"
+ 		"HTTPS options:\n"
+ 		"	--ca-certificate=<cert>		Load CA certificates from file <cert>\n"
+@@ -501,6 +511,8 @@
+ 	L_CA_CERTIFICATE,
+ 	L_USER,
+ 	L_PASSWORD,
++	L_CUSTOM_HEADER_KEY,
++	L_CUSTOM_HEADER_VALUE,
+ 	L_USER_AGENT,
+ 	L_POST_DATA,
+ 	L_SPIDER,
+@@ -516,6 +531,8 @@
+ 	[L_CA_CERTIFICATE] = { "ca-certificate", required_argument },
+ 	[L_USER] = { "user", required_argument },
+ 	[L_PASSWORD] = { "password", required_argument },
++	[L_CUSTOM_HEADER_KEY] = { "header-key", required_argument },
++	[L_CUSTOM_HEADER_VALUE] = { "header-value", required_argument },
+ 	[L_USER_AGENT] = { "user-agent", required_argument },
+ 	[L_POST_DATA] = { "post-data", required_argument },
+ 	[L_SPIDER] = { "spider", no_argument },
+@@ -569,6 +588,12 @@
+ 				password = strdup(optarg);
+ 				memset(optarg, '*', strlen(optarg));
+ 				break;
++			case L_CUSTOM_HEADER_KEY:
++				custom_header_key = optarg;
++				break;
++			case L_CUSTOM_HEADER_VALUE:
++				custom_header_value = optarg;
++				break;
+ 			case L_USER_AGENT:
+ 				user_agent = optarg;
+ 				break;
