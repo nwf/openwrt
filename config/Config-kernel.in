@@ -1015,6 +1015,18 @@ menu "Filesystem ACL and attr support options"
 		select KERNEL_FS_POSIX_ACL
 		default y if USE_FS_ACL_ATTR
 
+config KERNEL_DEVMEM
+	bool "Enable /dev/mem"
+	default n
+
+if KERNEL_IPV6
+
+	config KERNEL_STRICT_DEVMEM
+		bool "Enable /dev/mem strictness"
+		default n
+
+endif
+
 endmenu
 
 config KERNEL_DEVMEM
