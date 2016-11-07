@@ -21,8 +21,8 @@ sect=63
 
 set $(ptgen -o $OUTPUT -h $head -s $sect -l $align -t $kernel_type -p ${BOOTFSSIZE}M -t $rootfs_type -p ${ROOTFSSIZE}M ${SIGNATURE:+-S 0x$SIGNATURE})
 
-BOOTOFFSET="$(($1 / 512))"
-ROOTFSOFFSET="$(($3 / 512))"
+BOOTOFFSET="$1"
+ROOTFSOFFSET="$3"
 
-dd bs=512 if="$BOOTFS" of="$OUTPUT" seek="$BOOTOFFSET" conv=notrunc
-dd bs=512 if="$ROOTFS" of="$OUTPUT" seek="$ROOTFSOFFSET" conv=notrunc
+dd bs=65536 if="$BOOTFS" of="$OUTPUT" seek="$BOOTOFFSET" conv=notrunc oflag=seek_bytes
+dd bs=65536 if="$ROOTFS" of="$OUTPUT" seek="$ROOTFSOFFSET" conv=notrunc oflag=seek_bytes
