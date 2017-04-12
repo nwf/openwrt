@@ -527,6 +527,7 @@ define Package/libxtables
  ABI_VERSION:=12
  DEPENDS:= \
 	+IPTABLES_CONNLABEL:libnetfilter-conntrack \
+	+IPTABLES_NFTABLES:libnfnetlink \
 	+IPTABLES_NFTABLES:libnftnl
 endef
 
