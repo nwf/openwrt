@@ -1,0 +1,11 @@
+--- u-boot-2017.09/tools/Makefile.orig	2017-11-14 17:12:32.122389156 +0000
++++ u-boot-2017.09/tools/Makefile	2017-11-14 18:36:30.255253345 +0000
+@@ -234,7 +234,7 @@
+ 
+ # Build a libfdt Python module if swig is available
+ # Use 'sudo apt-get install swig libpython-dev' to enable this
+-always += $(if $(shell which swig 2> /dev/null),_libfdt.so)
++# always += $(if $(shell which swig 2> /dev/null),_libfdt.so)
+ 
+ # Generated LCD/video logo
+ LOGO_H = $(objtree)/include/bmp_logo.h
