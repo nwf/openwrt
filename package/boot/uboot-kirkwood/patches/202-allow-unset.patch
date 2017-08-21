@@ -1,0 +1,24 @@
+diff --git a/common/cli_hush.c b/common/cli_hush.c
+index 07c048ec6a..9e0b4d26a5 100644
+--- a/common/cli_hush.c
++++ b/common/cli_hush.c
+@@ -2183,12 +2183,18 @@ int set_local_var(const char *s, int flg_export)
+ 	 * NAME=VALUE format.  So the first order of business is to
+ 	 * split 's' on the '=' into 'name' and 'value' */
+ 	value = strchr(name, '=');
+-	if (value == NULL || *(value + 1) == 0) {
++	if (value == NULL) {
+ 		free(name);
+ 		return -1;
+ 	}
++
+ 	*value++ = 0;
+ 
++	if (*value == 0) {
++		unset_local_var(name);
++		return 0;
++	}
++
+ 	for(cur = top_vars; cur; cur = cur->next) {
+ 		if(strcmp(cur->name, name)==0)
+ 			break;
