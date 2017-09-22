@@ -33,7 +33,7 @@ define Package/e2fsprogs
   SUBMENU:=Filesystem
   TITLE:=Ext2/3/4 filesystem utilities
   URL:=http://e2fsprogs.sourceforge.net/
-  DEPENDS:=+libuuid +libext2fs
+  DEPENDS:=+libuuid +libext2fs +libblkid
 endef
 
 define Package/e2fsprogs/description
