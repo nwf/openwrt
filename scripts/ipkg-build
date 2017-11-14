@@ -51,6 +51,11 @@ pkg_appears_sane() {
 	version=`required_field Version | sed 's/Version://; s/^.://g;'`
 	arch=`required_field Architecture`
 
+	if [ -z "$pkg" ]; then
+		echo "*** Error: Package name empty!" >&2
+		PKG_ERROR=1;
+	fi
+
 	if echo $pkg | grep '[^a-zA-Z0-9_.+-]'; then
 		echo "*** Error: Package name $name contains illegal characters, (other than [a-z0-9.+-])" >&2
 		PKG_ERROR=1;
