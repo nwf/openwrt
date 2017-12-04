@@ -1218,6 +1218,10 @@ dnsmasq_start()
 	procd_add_jail_mount $EXTRA_MOUNT $RFC6761FILE $TRUSTANCHORSFILE
 	procd_add_jail_mount $dnsmasqconffile $dnsmasqconfdir $resolvdir $user_dhcpscript
 	procd_add_jail_mount /etc/passwd /etc/group /etc/TZ /etc/hosts /etc/ethers
+        procd_add_jail_mount $HOSTFILE \
+                /sbin/hotplug-call /lib/functions.sh /bin/ls \
+                /etc/hotplug.d/dhcp /etc/hotplug.d/tftp /etc/hotplug.d/neigh \
+                /usr/bin/env /usr/bin/tr /usr/bin/logger
 	procd_add_jail_mount_rw /var/run/dnsmasq/ $leasefile
 	case "$logfacility" in */*)
 		[ ! -e "$logfacility" ] && touch "$logfacility"
