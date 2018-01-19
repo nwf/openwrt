@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 ARCH:=arm
 BOARD:=kirkwood
 BOARDNAME:=Marvell Kirkwood
-FEATURES:=usb nand squashfs ramdisk
+FEATURES:=ext4 usb nand squashfs ramdisk ubifs
 CPU_TYPE:=xscale
 
 KERNEL_PATCHVER:=5.4

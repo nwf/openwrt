@@ -8,6 +8,17 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
+define Build/boot-img
+	rm -f $@.boot
+	mkfs.fat -C $@.boot $(shell echo $$((16*1024)))
+	mcopy -i $@.boot $(IMAGE_KERNEL) ::uImage
+	mcopy -i $@.boot $(DTS_DIR)/$(DEVICE_DTS).dtb ::pogo4.dtb
+endef
+
+define Build/sdcard-img
+	./gen_sdcard_img.sh $@ $@.boot $(IMAGE_ROOTFS) 16 $(CONFIG_TARGET_ROOTFS_PARTSIZE)
+endef
+
 KERNEL_LOADADDR:=0x8000
 
 define Device/Default
@@ -53,6 +64,13 @@ define Device/cloudengines_pogoplugv4
   DEVICE_DTS := kirkwood-pogoplug-series-4
   DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-mvsdio kmod-usb3 \
 	kmod-gpio-button-hotplug
+  KERNEL := kernel-bin | uImage none
+  MKUBIFS_OPTS := -m 2048 -e 126KiB -c 4096
+  UBINIZE_PARTS := dtb=$(DTS_DIR)/$$(DEVICE_DTS).dtb
+ifeq ($(CONFIG_TARGET_ROOTFS_EXT4FS),y)
+  IMAGES += sdcard.img
+  IMAGE/sdcard.img := boot-img | sdcard-img
+endif
 endef
 TARGET_DEVICES += cloudengines_pogoplugv4
 
