@@ -518,7 +518,7 @@
 +#endif /* __POGOPLUGV4_H */
 --- /dev/null
 +++ b/configs/pogoplugv4_defconfig
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,56 @@
 +CONFIG_ARM=y
 +CONFIG_SYS_DCACHE_OFF=y
 +CONFIG_ARCH_CPU_INIT=y
@@ -557,13 +557,18 @@
 +CONFIG_CMD_NAND=y
 +CONFIG_CMD_MMC=y
 +CONFIG_CMD_GPIO=y
++CONFIG_CMD_UBI=y
++CONFIG_FIT=y
++CONFIG_FIT_VERBOSE=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_ENV_IS_IN_NAND=y
 +CONFIG_ENV_SIZE=0x20000
 +CONFIG_ENV_OFFSET=0x1C0000
 +CONFIG_ENV_SECT_SIZE=0x20000
 +CONFIG_ENV_ADDR=0x1C0000
-+CONFIG_CMD_UBI=y
++CONFIG_HUSH_PARSER=y
++CONFIG_LZMA=y
++CONFIG_LZO=y
 +CONFIG_USB=y
 +CONFIG_USB_EHCI_HCD=y
 +CONFIG_USB_STORAGE=y
@@ -1118,7 +1123,7 @@
  #endif /* _MV_COMMON_H */
 --- /dev/null
 +++ b/include/configs/pogoplugv4.h
-@@ -0,0 +1,113 @@
+@@ -0,0 +1,122 @@
 +/*
 + * Copyright (C) 2014-2016 bodhi <mibodhi@gmail.com>
 + * Based on
@@ -1231,4 +1236,35 @@
 + */
 +#define CONFIG_KIRKWOOD_GPIO
 +
++/*
++ * SDIO/MMC Card Configuration
++ */
++#ifdef CONFIG_CMD_MMC
++#define CONFIG_MVEBU_MMC
++#define CONFIG_SYS_MMC_BASE KW_SDIO_BASE
++#endif /* CONFIG_CMD_MMC */
++
 +#endif /* _CONFIG_POGOPLUGV4_H */
+--- a/arch/arm/mach-kirkwood/cpu.c	2017-09-11 18:10:40.000000000 +0000
++++ b/arm/mach-kirkwood/cpu.c	2018-01-22 00:23:48.246389130 +0000
+@@ -183,6 +183,20 @@
+ {
+ 	char *rev = "??";
+ 	u16 devid = (readl(KW_REG_PCIE_DEVID) >> 16) & 0xffff;
++
++#ifndef CONFIG_KW88F6192
++	devid = (readl(KW_REG_PCIE_DEVID) >> 16) & 0xffff;
++#else
++	/* Temporary hack until we have a proper way to id the SoC
++	 * KW88F6192 and KW88F6702 is not correctly determined, so force correct SoC.
++	 * Note that this is just for displaying purpose during U-Boot initialization */
++	devid = 0x6192;
++#ifdef CONFIG_KW88F6702
++        devid = 0x6702;
++#endif
++
++#endif
++
+ 	u8 revid = readl(KW_REG_PCIE_REVID) & 0xff;
+ 
+ 	if ((readl(KW_REG_DEVICE_ID) & 0x03) > 2) {

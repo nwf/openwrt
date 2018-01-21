@@ -66,7 +66,7 @@ define Device/cloudengines_pogoplugv4
 	kmod-gpio-button-hotplug
   KERNEL := kernel-bin | uImage none
   MKUBIFS_OPTS := -m 2048 -e 126KiB -c 4096
-  UBINIZE_PARTS := dtb=$(DTS_DIR)/$$(DEVICE_DTS).dtb
+  UBINIZE_PARTS := dtb=$(DTS_DIR)/$$(DEVICE_DTS).dtb=1
 ifeq ($(CONFIG_TARGET_ROOTFS_EXT4FS),y)
   IMAGES += sdcard.img
   IMAGE/sdcard.img := boot-img | sdcard-img
