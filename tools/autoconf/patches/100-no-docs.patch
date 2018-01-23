@@ -1,0 +1,22 @@
+--- a/Makefile.am.orig	2018-01-22 03:15:01.132170136 +0000
++++ b/Makefile.am	2018-01-22 03:13:03.908194202 +0000
+@@ -18,7 +18,7 @@
+ # bin/ must be run first, as it builds executables needed for tests.
+ # autom4te uses autotest.m4f to generate `testsuite', so build tests last.
+ # Rules in man/ use scripts from both bin/ and tests/, so *it* goes last.
+-SUBDIRS = bin . lib doc tests man
++SUBDIRS = bin . lib tests man
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ 
+--- a/Makefile.in.orig	2018-01-22 03:19:20.184116953 +0000
++++ b/Makefile.in	2018-01-22 03:19:38.788113134 +0000
+@@ -245,7 +245,7 @@
+ # bin/ must be run first, as it builds executables needed for tests.
+ # autom4te uses autotest.m4f to generate `testsuite', so build tests last.
+ # Rules in man/ use scripts from both bin/ and tests/, so *it* goes last.
+-SUBDIRS = bin . lib doc tests man
++SUBDIRS = bin . lib tests man
+ ACLOCAL_AMFLAGS = -I m4
+ EXTRA_DIST = ChangeLog.0 ChangeLog.1 ChangeLog.2 ChangeLog.3 \
+ 	     BUGS COPYINGv3 COPYING.EXCEPTION \
