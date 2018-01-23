@@ -563,7 +563,7 @@
 +#endif /* __POGOPLUGV4_H */
 --- /dev/null
 +++ b/configs/pogoplugv4_defconfig
-@@ -0,0 +1,35 @@
+@@ -0,0 +1,38 @@
 +CONFIG_ARM=y
 +CONFIG_KIRKWOOD=y
 +CONFIG_TARGET_POGOPLUGV4=y
@@ -574,7 +574,6 @@
 +# CONFIG_CMD_FLASH is not set
 +CONFIG_SYS_NS16550=y
 +CONFIG_CMD_FDT=y
-+CONFIG_OF_LIBFDT=y
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_DHCP=y
 +CONFIG_CMD_MII=y
@@ -586,19 +585,23 @@
 +CONFIG_CMD_EXT2=y
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_FAT=y
-+CONFIG_CMD_JFFS2=y
++# CONFIG_CMD_JFFS2 is not set
 +CONFIG_CMD_MTDPARTS=y
 +CONFIG_CMD_ENV=y
 +CONFIG_CMD_NAND=y
 +CONFIG_CMD_MMC=y
++CONFIG_CMD_UBI=y
++CONFIG_FIT=y
++CONFIG_FIT_VERBOSE=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_ENV_IS_IN_NAND=y
-+CONFIG_CMD_UBI=y
++CONFIG_HUSH_PARSER=y
++CONFIG_LZMA=y
++CONFIG_LZO=y
++CONFIG_OF_LIBFDT=y
 +CONFIG_USB=y
 +CONFIG_USB_EHCI_HCD=y
 +CONFIG_USB_STORAGE=y
-+CONFIG_LZMA=y
-+CONFIG_LZO=y
 --- a/drivers/gpio/kw_gpio.c
 +++ b/drivers/gpio/kw_gpio.c
 @@ -148,3 +148,36 @@ void kw_gpio_set_blink(unsigned pin, int
@@ -652,7 +655,7 @@
  #endif /* _MV_COMMON_H */
 --- /dev/null
 +++ b/include/configs/pogoplugv4.h
-@@ -0,0 +1,132 @@
+@@ -0,0 +1,140 @@
 +/*
 + * Copyright (C) 2014-2016 bodhi <mibodhi@gmail.com>
 + * Based on
@@ -760,8 +763,8 @@
 +/*
 + * File system
 + */
-+#define CONFIG_JFFS2_NAND
-+#define CONFIG_JFFS2_LZO
++#undef CONFIG_JFFS2_NAND
++#undef CONFIG_JFFS2_LZO
 +#define CONFIG_MTD_DEVICE               /* needed for mtdparts commands */
 +#define CONFIG_MTD_PARTITIONS
 +
@@ -784,4 +787,35 @@
 + */
 +#define CONFIG_KIRKWOOD_GPIO
 +
++/*
++ * SDIO/MMC Card Configuration
++ */
++#ifdef CONFIG_CMD_MMC
++#define CONFIG_MVEBU_MMC
++#define CONFIG_SYS_MMC_BASE KW_SDIO_BASE
++#endif /* CONFIG_CMD_MMC */
++
 +#endif /* _CONFIG_POGOPLUGV4_H */
+--- a/arch/arm/mach-kirkwood/cpu.c	2017-09-11 18:10:40.000000000 +0000
++++ b/arm/mach-kirkwood/cpu.c	2018-01-22 00:23:48.246389130 +0000
+@@ -183,6 +183,20 @@
+ {
+ 	char *rev = "??";
+ 	u16 devid = (readl(KW_REG_PCIE_DEVID) >> 16) & 0xffff;
++
++#ifndef CONFIG_KW88F6192
++	devid = (readl(KW_REG_PCIE_DEVID) >> 16) & 0xffff;
++#else
++	/* Temporary hack until we have a proper way to id the SoC
++	 * KW88F6192 and KW88F6702 is not correctly determined, so force correct SoC.
++	 * Note that this is just for displaying purpose during U-Boot initialization */
++	devid = 0x6192;
++#ifdef CONFIG_KW88F6702
++        devid = 0x6702;
++#endif
++
++#endif
++
+ 	u8 revid = readl(KW_REG_PCIE_REVID) & 0xff;
+ 
+ 	if ((readl(KW_REG_DEVICE_ID) & 0x03) > 2) {
