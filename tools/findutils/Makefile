@@ -16,6 +16,8 @@ PKG_HASH:=c5fefbdf9858f7e4feb86f036e1247a54c79fc2d8e4b7064d5aaa1f47dfa789a
 
 HOST_BUILD_PARALLEL:=1
 
+HOST_FIXUP:=autoreconf
+
 include $(INCLUDE_DIR)/host-build.mk
 
 HOST_CONFIGURE_ARGS += \
