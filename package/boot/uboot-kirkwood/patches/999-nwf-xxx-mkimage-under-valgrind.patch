@@ -1,0 +1,14 @@
+This is not a good patch.  No good deed is honored here.  This somehow makes
+a segfaulting program not.  I am not happy about it, but here we are.
+
+--- a/Makefile	2018-01-23 16:12:55.830670330 +0000
++++ b/Makefile	2018-01-23 16:13:07.270669181 +0000
+@@ -834,7 +834,7 @@
+ MKIMAGEOUTPUT ?= /dev/null
+ 
+ quiet_cmd_mkimage = MKIMAGE $@
+-cmd_mkimage = $(objtree)/tools/mkimage $(MKIMAGEFLAGS_$(@F)) -d $< $@ \
++cmd_mkimage = valgrind $(objtree)/tools/mkimage $(MKIMAGEFLAGS_$(@F)) -d $< $@ \
+ 	$(if $(KBUILD_VERBOSE:1=), >$(MKIMAGEOUTPUT))
+ 
+ quiet_cmd_mkfitimage = MKIMAGE $@
