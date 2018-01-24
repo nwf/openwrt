@@ -105,7 +105,7 @@ tools-y += $(tools-core)
 $(foreach tool, $(filter-out xz,$(tools-core)), $(eval $(curdir)/$(tool)/compile += $(curdir)/sed/compile))
 $(curdir)/xz/compile += $(curdir)/flock/compile
 
-$(curdir)/sed/compile := $(curdir)/flock/compile $(curdir)/xz/compile
+$(curdir)/sed/compile := $(curdir)/flock/compile $(curdir)/xz/compile $(curdir)/libtool/compile
 tools-y += flock sed
 
 $(curdir)/autoremove := 1
