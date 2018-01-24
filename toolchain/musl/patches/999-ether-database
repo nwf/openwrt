@@ -1,0 +1,141 @@
+Import the bulk of this patch so that /etc/ether parsing works again,
+which is needed by rarpd.
+
+> Date: Sat, 20 Oct 2012 22:15:44 +0200
+> From: Abdoulaye Walsimou Gaye <awg@...toolkit.org>
+> To: musl@...ts.openwall.com
+> Cc: Abdoulaye Walsimou Gaye <awg@...toolkit.org>
+> Subject: [PATCH 3/4] Import BSD functions defined in <netinet/ether.h> from NetBSD
+> 
+> Signed-off-by: Abdoulaye Walsimou Gaye <awg@...toolkit.org>
+
+--- a/src/network/ether.c	2018-01-24 07:24:41.480145335 +0000
++++ b/src/network/ether.c	2018-01-24 07:31:50.952865427 +0000
+@@ -1,6 +1,14 @@
++#define _BSD_SOURCE
++
+ #include <stdlib.h>
+ #include <netinet/ether.h>
+ #include <stdio.h>
++#include <assert.h>
++#include <errno.h>
+
++#ifndef _PATH_ETHERS
++#define _PATH_ETHERS "/etc/ethers"
++#endif
++
+ struct ether_addr *ether_aton_r (const char *x, struct ether_addr *p_a)
+ {
+ 	struct ether_addr a;
+@@ -42,17 +46,111 @@
+ 	return ether_ntoa_r (p_a, x);
+ }
+ 
++
++/*
++ * ether_line():
++ * This function parses a line from the /etc/ethers file and fills in the passed
++ * ``struct ether_addr'' and character buffer with the Ethernet address and host
++ * name on the line.
++ * It returns zero if the line was successfully parsed and -1 if not.
++ */
+ int ether_line(const char *l, struct ether_addr *e, char *hostname)
+ {
++	unsigned int i[6];
++
++#define S2(arg) #arg
++#define S1(arg) S2(arg)
++	static const char fmt[] = " %x:%x:%x:%x:%x:%x"
++	    " %" S1(MAXHOSTNAMELEN) "s\n";
++#undef S2
++#undef S1
++
++	assert(l != NULL);
++	assert(e != NULL);
++	assert(hostname != NULL);
++
++	if (sscanf(l, fmt,
++	    &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], hostname) == 7) {
++		e->ether_addr_octet[0] = (unsigned char)i[0];
++		e->ether_addr_octet[1] = (unsigned char)i[1];
++		e->ether_addr_octet[2] = (unsigned char)i[2];
++		e->ether_addr_octet[3] = (unsigned char)i[3];
++		e->ether_addr_octet[4] = (unsigned char)i[4];
++		e->ether_addr_octet[5] = (unsigned char)i[5];
++		return 0;
++	}
++	errno = EINVAL;
+ 	return -1;
+ }
+ 
++/*
++ * ether_ntohost():
++ * This function interrogates the data base mapping host names to Ethernet
++ * addresses, /etc/ethers.
++ * It looks up the given Ethernet address and writes the associated host name
++ * into the character buffer passed.
++ * It returns zero if it finds the requested host name and -1 if not.
++ */
+ int ether_ntohost(char *hostname, const struct ether_addr *e)
+ {
++	FILE *f;
++	char *p;
++	size_t len;
++	struct ether_addr try;
++
++	assert(hostname != NULL);
++	assert(e != NULL);
++
++	f = fopen(_PATH_ETHERS, "r");
++	if (f == NULL)
++		return -1;
++	while ((p = fgetln(f, &len)) != NULL) {
++		if (p[len - 1] != '\n')
++			continue;		/* skip lines w/o \n */
++		p[--len] = '\0';
++		if (ether_line(p, &try, hostname) == 0 &&
++		    memcmp(&try, e, sizeof try) == 0) {
++			(void)fclose(f);
++			return 0;
++		}
++	}
++	(void)fclose(f);
++	errno = ENOENT;
+ 	return -1;
+ }
+ 
++/*
++ * ether_hostton():
++ * This function interrogates the data base mapping host names to Ethernet
++ * addresses, /etc/ethers.
++ * It looks up the given host name and writes the associated Ethernet address
++ * into the structure passed.
++ * It returns zero if it finds the requested address and -1 if not.
++ */
+ int ether_hostton(const char *hostname, struct ether_addr *e)
+ {
++	FILE *f;
++	char *p;
++	size_t len;
++	char try[MAXHOSTNAMELEN + 1];
++
++	assert(hostname != NULL);
++	assert(e != NULL);
++
++	f = fopen(_PATH_ETHERS, "r");
++	if (f==NULL)
++		return -1;
++
++	while ((p = fgetln(f, &len)) != NULL) {
++		if (p[len - 1] != '\n')
++			continue;		/* skip lines w/o \n */
++		p[--len] = '\0';
++		if (ether_line(p, e, try) == 0 && strcmp(hostname, try) == 0) {
++			(void)fclose(f);
++			return 0;
++		}
++	}
++	(void)fclose(f);
++	errno = ENOENT;
+ 	return -1;
+ }
