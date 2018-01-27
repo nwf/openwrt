@@ -24,6 +24,11 @@ define Host/Clean
 	$(call Host/Clean/Default)
 endef
 
+define Host/Prepare
+	$(call Host/Prepare/Default)
+	touch $(HOST_BUILD_DIR)/src/parse-gram.[ch]
+endef
+
 define Host/Install
 	$(call Host/Install/Default)
 	$(INSTALL_BIN) ./scripts/yacc $(STAGING_DIR_HOST)/bin/yacc
