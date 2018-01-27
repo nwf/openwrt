@@ -20,6 +20,11 @@ include $(INCLUDE_DIR)/host-build.mk
 
 HOST_CONFIGURE_ARGS += --enable-threads=posix --disable-nls
 
+define Host/Prepare
+	$(call Host/Prepare/Default)
+	touch $(HOST_BUILD_DIR)/src/parse-gram.[ch]
+endef
+
 define Host/Install
 	$(call Host/Install/Default)
 	$(INSTALL_BIN) ./scripts/yacc $(STAGING_DIR_HOST)/bin/yacc
