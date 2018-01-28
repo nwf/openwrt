@@ -41,6 +41,7 @@ define Host/Install
 	ln -sf aclocal $(STAGING_DIR_HOST)/bin/aclocal-1.11
 	ln -sf aclocal $(STAGING_DIR_HOST)/bin/aclocal-1.11.6
 	ln -sf aclocal $(STAGING_DIR_HOST)/bin/aclocal-1.15
+	cp files/acm4/* $(STAGING_DIR_HOST)/share/aclocal
 endef
 
 define Host/Clean
