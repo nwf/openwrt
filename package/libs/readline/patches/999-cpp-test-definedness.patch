@@ -1,0 +1,11 @@
+--- a/nls.c	2018-01-28 06:34:26.374728869 +0000
++++ b/nls.c	2018-01-28 06:34:35.074731411 +0000
+@@ -106,7 +106,7 @@
+   char *cp;
+   size_t len;
+ 
+-#if HAVE_LANGINFO_CODESET
++#if defined(HAVE_LANGINFO_CODESET)
+   cp = nl_langinfo (CODESET);
+   return (STREQ (cp, "UTF-8") || STREQ (cp, "utf8"));
+ #else
