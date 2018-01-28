@@ -42,6 +42,7 @@ define Host/Install
 			api=$$$$(($$$$api - 1)); \
 		done; \
 	)
+	cp files/acm4/* $(STAGING_DIR_HOST)/share/aclocal
 endef
 
 define Host/Uninstall
