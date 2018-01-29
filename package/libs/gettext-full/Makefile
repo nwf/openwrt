@@ -99,6 +99,7 @@ endef
 define Host/Install
 	$(call Host/Install/Default)
 	$(SED) '/read dummy/d' $(STAGING_DIR_HOSTPKG)/bin/gettextize
+	$(CP) ./files/wint_t.m4 $(STAGING_DIR_HOSTPKG)/share/aclocal/
 endef
 
 
