@@ -89,14 +89,18 @@ define Build/InstallDev
 
 	$(INSTALL_DIR) $(1)/usr/share/aclocal
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/aclocal/* $(1)/usr/share/aclocal/
-
-	$(SED) '/read dummy/d' $(STAGING_DIR_HOSTPKG)/bin/gettextize
 endef
 
 define Package/libintl-full/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libintl.so.* $(1)/usr/lib/
 endef
+
+define Host/Install
+	$(call Host/Install/Default)
+	$(SED) '/read dummy/d' $(STAGING_DIR_HOSTPKG)/bin/gettextize
+endef
+
 
 $(eval $(call HostBuild))
 $(eval $(call BuildPackage,libintl-full))
