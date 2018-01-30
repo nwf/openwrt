@@ -1,0 +1,14 @@
+--- a/Makefile.am	2018-01-30 06:10:37.808202615 +0000
++++ b/Makefile.am	2018-01-30 06:10:43.920206084 +0000
+@@ -34,11 +34,6 @@
+ 
+ noinst_SCRIPTS = testit.sh
+ 
+-TESTS_ENVIRONMENT = \
+-test1="$(top_builddir)/test1"
+-
+-TESTS = $(top_srcdir)/testit.sh
+-
+ include_HEADERS = popt.h
+ 
+ usrlibdir = $(libdir)
