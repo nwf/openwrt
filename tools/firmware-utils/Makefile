@@ -11,6 +11,8 @@ PKG_NAME := firmware-utils
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/kernel.mk
 
+HOST_FIXUP:=autoreconf
+
 define cc
 	$(HOSTCC) \
 		$(HOST_CFLAGS) \
