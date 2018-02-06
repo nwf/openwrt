@@ -68,6 +68,7 @@ $(curdir)/bc/compile := $(curdir)/bison/compile
 $(curdir)/findutils/compile := $(curdir)/bison/compile
 $(curdir)/gengetopt/compile := $(curdir)/libtool/compile
 $(curdir)/patchelf/compile := $(curdir)/libtool/compile
+$(curdir)/patch/compile := $(curdir)/libtool/compile
 $(curdir)/tar/compile := $(curdir)/libtool/compile
 $(curdir)/dosfstools/compile := $(curdir)/autoconf/compile $(curdir)/automake/compile
 $(curdir)/libressl/compile := $(curdir)/libtool/compile $(curdir)/pkgconf/compile
