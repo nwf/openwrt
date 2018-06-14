@@ -79,4 +79,14 @@ define Device/xlnx_zynq-zc702
 endef
 TARGET_DEVICES += xlnx_zynq-zc702
 
+define Device/tul_pynq-z2_nwf
+	DEVICE_TITLE := TUL PYNQ Z2, NWF DTB
+	DEVICE_DTS := zynq-pynq-z2-nwf
+
+	KERNEL := uImage gzip
+	KERNEL_IMG := uImage
+	KERNEL_INITRAMFS_PREFIX :=
+endef
+TARGET_DEVICES += tul_pynq-z2_nwf
+
 $(eval $(call BuildImage))
