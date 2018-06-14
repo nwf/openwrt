@@ -1,0 +1,89 @@
+--- /dev/null	2018-08-16 22:10:00.868835049 +0000
++++ b/arch/arm/boot/dts/zynq-pynq-z2-nwf.dts	2018-09-08 13:11:41.068401595 +0000
+@@ -0,0 +1,76 @@
++/*
++ *  Copyright (C) 2011 - 2014 Xilinx
++ *  Copyright (C) 2012 National Instruments Corp.
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++/dts-v1/;
++#include "zynq-7000.dtsi"
++
++/ {
++	model = "Zynq Zed Development Board";
++	compatible = "xlnx,zynq-zed", "xlnx,zynq-7000";
++
++	aliases {
++		ethernet0 = &gem0;
++		serial0 = &uart0;
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x20000000>;
++	};
++
++	chosen {
++		bootargs = "console=ttyPS0,115200 root=/dev/mmcblk0p2 rw earlyprintk rootfstype=ext4 rootwait devtmpfs.mount=1 uio_pdrv_genirq.of_id=\"generic-uio\"";
++		// bootargs = "console=ttyPS0,115200 earlyprintk devtmpfs.mount=1 uio_pdrv_genirq.of_id=\"generic-uio\"";
++		stdout-path = "serial0:115200n8";
++		linux,stdout-path = "/amba@0/serial@E0001000";
++	};
++
++	usb_phy0: phy0 {
++		compatible = "usb-nop-xceiv";
++		#phy-cells = <0>;
++	};
++};
++
++&clkc {
++	fclk-enable = <0xf>;
++	ps-clk-frequency = <50000000>;
++};
++
++&gem0 {
++	status = "okay";
++	phy-mode = "rgmii-id";
++	phy-handle = <&ethernet_phy>;
++
++	ethernet_phy: ethernet-phy@0 {
++		reg = <0>;
++		device_type = "ethernet-phy";
++	};
++};
++
++&sdhci0 {
++	status = "okay";
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&uart1 {
++	status = "okay";
++};
++
++&usb0 {
++	status = "okay";
++	dr_mode = "host";
++	usb-phy = <&usb_phy0>;
++};
+--- a/arch/arm/boot/dts/Makefile.orig	2018-09-08 14:05:49.059261786 +0000
++++ b/arch/arm/boot/dts/Makefile	2018-09-08 14:06:15.359284945 +0000
+@@ -1003,6 +1003,7 @@
+ dtb-$(CONFIG_ARCH_ZYNQ) += \
+ 	zynq-microzed.dtb \
+ 	zynq-parallella.dtb \
++	zynq-pynq-z2-nwf.dtb \
+ 	zynq-zc702.dtb \
+ 	zynq-zc706.dtb \
+ 	zynq-zed.dtb \
