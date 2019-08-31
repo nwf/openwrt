@@ -1,10 +1,12 @@
---- a/doc/Makefile.inc	2018-01-27 21:09:24.561432746 +0000
-+++ b/doc/Makefile.inc	2018-01-27 21:09:28.373433860 +0000
-@@ -74,7 +74,6 @@
-   src/Makefile.in
+diff --git automake-1.16.1/Makefile.am automake-1.16.1/Makefile.am.orig
+index b5ed5eed74..750bc0ec12 100644
+--- a/Makefile.am
++++ b/Makefile.am.orig
+@@ -124,7 +124,6 @@ EXTRA_DIST += \
  
- dist_noinst_DATA += $(amhello_sources)
--dist_doc_DATA = $(srcdir)/%D%/amhello-1.0.tar.gz
- 
- setup_autotools_paths = { \
-   $(extend_PATH) \
+ # Most work delegated to sub-dir makefile fragments.
+ include $(srcdir)/bin/local.mk
+-include $(srcdir)/doc/local.mk
+ include $(srcdir)/lib/local.mk
+ include $(srcdir)/lib/Automake/local.mk
+ include $(srcdir)/lib/am/local.mk
