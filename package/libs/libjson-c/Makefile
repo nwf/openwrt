@@ -22,6 +22,8 @@ PKG_CPE_ID:=cpe:/a:json-c_project:json-c
 CMAKE_INSTALL:=1
 CMAKE_OPTIONS += -DCMAKE_INSTALL_INCLUDEDIR=$(STAGING_DIR)/usr/include
 
+HOST_FIXUP:=autoreconf libtool
+
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 
 include $(INCLUDE_DIR)/package.mk
