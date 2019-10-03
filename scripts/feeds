@@ -764,7 +764,7 @@ sub update_feed($$$$$)
 	my $rv=0;
 
 	if( $force_relocate ) {
-		warn "Source of feed $name has changed, replacing copy\n";
+		die "Source of feed $name has changed, replacing copy\n";
 	}
 	$update_method{$type} or do {
 		warn "Unknown type '$type' in feed $name\n";
