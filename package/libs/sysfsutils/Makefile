@@ -19,6 +19,7 @@ PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 PKG_LICENSE:=LGPL-2.1
 PKG_LICENSE_FILES:=COPYING cmd/GPL lib/LGPL
 
+HOST_FIXUP:=autoreconf
 PKG_FIXUP:=autoreconf
 
 PKG_INSTALL:=1
