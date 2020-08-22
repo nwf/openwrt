@@ -1,0 +1,34 @@
+diff --git a/urngd.c b/urngd.c
+index 1168674..9eedb6b 100644
+--- a/urngd.c
++++ b/urngd.c
+@@ -78,7 +78,8 @@ static inline bool entropy_file_available(struct urngd *u)
+ 	return (u->file_fd.fd >= 0) && !(u->file_fd.registered);
+ }
+ 
+-static size_t write_entropy(struct urngd *u, struct rand_pool_info *rpi)
++static size_t write_entropy(struct urngd *u, struct rand_pool_info *rpi,
++                            const char *src)
+ {
+ 	int ret;
+ 	ret =  ioctl(u->rnd_fd.fd, RNDADDENTROPY, rpi);
+@@ -86,8 +87,8 @@ static size_t write_entropy(struct urngd *u, struct rand_pool_info *rpi)
+ 		ERROR("error injecting entropy: %s\n", strerror(errno));
+ 		return 0;
+ 	} else {
+-		DEBUG(1, "injected %ub (%ub of entropy)\n",
+-			rpi->buf_size, rpi->entropy_count/8);
++		DEBUG(1, "injected %ub (%ub of entropy) from %s\n",
++			rpi->buf_size, rpi->entropy_count/8, src);
+ 		ret = rpi->buf_size;
+ 	}
+ 
+@@ -109,7 +110,7 @@ static size_t gather_jitter_entropy(struct urngd *u)
+ 	rpi->buf_size = ENTROPYPOOLBYTES;
+ 	rpi->entropy_count = 8 * ENTROPYBYTES;
+ 
+-	ret = write_entropy(u, rpi);
++	ret = write_entropy(u, rpi, "jitter");
+ 
+ 	memset_secure(&rpi->buf, 0, ENTROPYPOOLBYTES);
+ 

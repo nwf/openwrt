@@ -1,0 +1,163 @@
+diff --git a/urngd.c b/urngd.c
+index 31181f0..1168674 100644
+--- a/urngd.c
++++ b/urngd.c
+@@ -61,6 +61,7 @@ unsigned int debug;
+ 
+ struct urngd {
+ 	struct uloop_fd rnd_fd;
++	struct uloop_fd file_fd;
+ 	struct rand_data *ec;
+ };
+ 
+@@ -72,6 +73,11 @@ static inline void memset_secure(void *s, int c, size_t n)
+ 	__asm__ __volatile__("" : : "r" (s) : "memory");
+ }
+ 
++static inline bool entropy_file_available(struct urngd *u)
++{
++	return (u->file_fd.fd >= 0) && !(u->file_fd.registered);
++}
++
+ static size_t write_entropy(struct urngd *u, struct rand_pool_info *rpi)
+ {
+ 	int ret;
+@@ -88,7 +94,7 @@ static size_t write_entropy(struct urngd *u, struct rand_pool_info *rpi)
+ 	return ret;
+ }
+ 
+-static size_t gather_entropy(struct urngd *u)
++static size_t gather_jitter_entropy(struct urngd *u)
+ {
+ 	ssize_t ent;
+ 	size_t ret = 0;
+@@ -110,12 +116,43 @@ static size_t gather_entropy(struct urngd *u)
+ 	return ret;
+ }
+ 
++static size_t gather_file_entropy(struct urngd *u) {
++	static const size_t file_bytes = 1024;
++	struct rand_pool_info *rpi = alloca(sizeof(*rpi) + file_bytes);
++	ssize_t ent;
++	size_t ret;
++
++	ent = read(u->file_fd.fd, (char *)&rpi->buf[0], file_bytes);
++	if (ent > 0) {
++		rpi->buf_size = ent;
++		rpi->entropy_count = 8 * ent;
++		ret = write_entropy(u, rpi, "file");
++
++		memset_secure(&rpi->buf, 0, ent);
++	} else {
++		if ((ent < 0) && (errno != EAGAIN) && (errno != EWOULDBLOCK))
++			LOG("read(file) error %s\n", strerror(errno));
++		ret = 0;
++
++		uloop_fd_add(&u->file_fd, ULOOP_READ);
++	}
++
++	return ret;
++}
++
+ static void low_entropy_cb(struct uloop_fd *ufd, unsigned int events)
+ {
+ 	struct urngd *u = container_of(ufd, struct urngd, rnd_fd);
+ 
+ 	DEBUG(2, DEV_RANDOM " signals low entropy\n");
+-	gather_entropy(u);
++	gather_jitter_entropy(u);
++	if (entropy_file_available(u))
++		gather_file_entropy(u);
++}
++
++static void file_ready_cb(struct uloop_fd *ufd, unsigned int events)
++{
++	uloop_fd_delete(ufd);
+ }
+ 
+ static void urngd_done(struct urngd *u)
+@@ -129,6 +166,11 @@ static void urngd_done(struct urngd *u)
+ 		close(u->rnd_fd.fd);
+ 		u->rnd_fd.fd = 0;
+ 	}
++
++	if (u->file_fd.fd >= 0) {
++		close(u->file_fd.fd);
++		u->file_fd.fd = -1;
++	}
+ }
+ 
+ static bool urngd_init(struct urngd *u)
+@@ -154,6 +196,18 @@ static bool urngd_init(struct urngd *u)
+ 
+ 	uloop_fd_add(&u->rnd_fd, ULOOP_WRITE);
+ 
++	if (u->file_fd.fd >= 0) {
++		int ret;
++
++		u->file_fd.cb = file_ready_cb;
++		ret = uloop_fd_add(&u->file_fd, ULOOP_READ);
++		if (ret == -1 && errno == EPERM) {
++			LOG("File (-f) does not support polling;"
++				" assuming that's OK.\n");
++			u->file_fd.registered = false;
++		}
++	}
++
+ 	return true;
+ }
+ 
+@@ -164,11 +218,24 @@ static int usage(const char *prog)
+ #ifdef URNGD_DEBUG
+ 		"	-d <level>	Enable debug messages\n"
+ #endif
++		"	-f <file>	Source entropy from <file>\n"
+ 		"	-S		Print messages to stdout\n"
+ 		"\n", prog);
+ 	return 1;
+ }
+ 
++static void do_opt_file(struct urngd *u, const char *filename)
++{
++	if (u->file_fd.fd >= 0) {
++		close(u->file_fd.fd);
++	}
++
++	u->file_fd.fd = open(filename, O_RDONLY | O_NONBLOCK);
++	if (u->file_fd.fd < 0) {
++		ERROR("%s open failed: %s\n", filename, strerror(errno));
++	}
++}
++
+ int main(int argc, char **argv)
+ {
+ 	int ch;
+@@ -182,13 +249,18 @@ int main(int argc, char **argv)
+ 	}
+ #endif
+ 
+-	while ((ch = getopt(argc, argv, "d:S")) != -1) {
++	urngd_service.file_fd.fd = -1;
++
++	while ((ch = getopt(argc, argv, "d:f:S")) != -1) {
+ 		switch (ch) {
+ #ifdef URNGD_DEBUG
+ 		case 'd':
+ 			debug = atoi(optarg);
+ 			break;
+ #endif
++		case 'f':
++			do_opt_file(&urngd_service, optarg);
++			break;
+ 		case 'S':
+ 			ulog_channels = ULOG_STDIO;
+ 			break;
+@@ -207,7 +279,7 @@ int main(int argc, char **argv)
+ 
+ 	LOG("v%s started.\n", URNGD_VERSION);
+ 
+-	gather_entropy(&urngd_service);
++	gather_jitter_entropy(&urngd_service);
+ 
+ 	uloop_run();
+ 	uloop_done();
