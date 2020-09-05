@@ -7,8 +7,13 @@ NAME=urngd
 PROG=/sbin/urngd
 
 start_service() {
+	local precmd=$(uci -q get system.@rngd[0].precmd)
+	local file=$(uci -q get system.@urngd[0].file)
+
+	[ -z "$precmd" ] || ${precmd} "${file}"
+
 	procd_open_instance
-	procd_set_param command "$PROG"
+	procd_set_param command "$PROG" ${file:+-f "$file"}
 	procd_close_instance
 }
 
