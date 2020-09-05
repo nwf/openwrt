@@ -149,11 +149,24 @@
 			reg = <0x200000 0x200000>;
 		};
 
+		// RAS header the first, quite small, but reserves 1M in flash.
+		// This is known to the bootloader and must be right here.
 		partition@400000 {
 			label = "header";
 			reg = <0x400000 0x100000>;
 		};
 
+		// Synthetic partition of sorts, includes both kernel and root
+		// UBI partitons below; used by OpenWRT sysupgrade paths.
+		//
+		// The bootloader knows the offset 0x500000 but thinks this
+		// partition is 0x1E00000 in size.
+		//
+		// OpenWRT also changes the table to subsume what would be the
+		// bootloader's second header (at 0x2300000 - 0x2400000),
+		// second root filesystem (at 0x2400000 - 0x4200000), and "bu1"
+		// (0x4200000 - 0x4400000) and "bu2" (0x4400000 - end)
+		// partitions.
 		firmware@500000 {
 			label = "firmware";
 			reg = <0x500000 0x7b00000>;
