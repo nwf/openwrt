@@ -67,7 +67,7 @@ ubilayout() {
 		size="$part"
 		if [ -z "$size" ]; then
 			size="$( round_up "$( stat -c%s "$image" )" 1024 )"
-		else
+		elif [ "${size%B}" = "${size}" ]; then
 			size="${size}MiB"
 		fi
 
