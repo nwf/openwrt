@@ -178,7 +178,7 @@ define Device/cloudengines_pogoplugv4
   DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-mvsdio kmod-usb3 \
 	kmod-gpio-button-hotplug kmod-rtc-mv
   KERNEL := kernel-bin | uImage none
-  UBINIZE_PARTS := dtb=$(DTS_DIR)/$$(DEVICE_DTS).dtb
+  UBINIZE_PARTS := dtb=$(DTS_DIR)/$$(DEVICE_DTS).dtb=128KiB
 ifeq ($(CONFIG_TARGET_ROOTFS_EXT4FS),y)
   IMAGES += sdcard.img
   IMAGE/sdcard.img := boot-img | sdcard-img
