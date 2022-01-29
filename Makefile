@@ -61,9 +61,11 @@ clean: _clean
 targetclean: _clean
 	rm -rf $(TOOLCHAIN_DIR) $(BUILD_DIR_BASE)/hostpkg $(BUILD_DIR_TOOLCHAIN)
 
-dirclean: targetclean clean
-	rm -rf $(STAGING_DIR_HOST) $(STAGING_DIR_HOSTPKG) $(BUILD_DIR_BASE)/host
+tmpclean: FORCE
 	rm -rf $(TMP_DIR)
+
+dirclean: targetclean tmpclean clean
+	rm -rf $(STAGING_DIR_HOST) $(STAGING_DIR_HOSTPKG) $(BUILD_DIR_BASE)/host
 	$(MAKE) -C $(TOPDIR)/scripts/config clean
 
 toolchain_rebuild_check:
