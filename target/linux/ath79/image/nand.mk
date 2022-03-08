@@ -43,7 +43,7 @@ define Build/zyxel-factory
 				-o $@.new \
 				-l 131072 \
 			&& mv $@.new $@ ; \
-		fi
+		else echo "Oversized RAS image"; exit 1; fi
 endef
 
 define Device/8dev_rambutan
