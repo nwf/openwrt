@@ -100,6 +100,12 @@ define U-Boot/pogoplugv4
   BUILD_DEVICES:=cloudengines_pogoplugv4
 endef
 
+# FTBFS :(
+# define U-Boot/dreamplug
+#  NAME:=Globalscale DreamPlug
+#  BUILD_DEVICES:=globalscale_dreamplug
+#endef
+
 define U-Boot/sheevaplug
   NAME:=Globalscale SheevaPlug
   BUILD_DEVICES:=globalscale_sheevaplug
@@ -119,6 +125,7 @@ UBOOT_TARGETS := \
 	pogo_e02 pogo_e02_second_stage \
 	pogoplugv4 \
 	sheevaplug
+	# FTBFS # dreamplug
 
 define Build/Configure
 	$(if $(findstring _second_stage,$(BUILD_VARIANT)),

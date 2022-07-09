@@ -210,6 +210,22 @@ define Device/endian_4i-edge-200
 endef
 TARGET_DEVICES += endian_4i-edge-200
 
+define Device/globalscale_dreamplug
+  DEVICE_VENDOR := Globalscale
+  DEVICE_MODEL := Dreamplug
+  DEVICE_PACKAGES := kmod-btmrvl kmod-mwifiex-sdio kmod-mvsdio \
+    kmod-usb-storage-uas kmod-fs-ext4 kmod-fs-vfat block-mount \
+    wireless-tools wpad-basic-wolfssl wpa-cli \
+    kmod-fs-configfs zram-swap
+
+  # Don't append a DTB here, since we need to do brave things with initrd
+  KERNEL := kernel-bin | uImage none
+
+  IMAGES += sdcard.img
+  IMAGE/sdcard.img := boot-img | sdcard-img
+endef
+TARGET_DEVICES += globalscale_dreamplug
+
 define Device/globalscale_sheevaplug
   DEVICE_VENDOR := Globalscale
   DEVICE_MODEL := Sheevaplug
