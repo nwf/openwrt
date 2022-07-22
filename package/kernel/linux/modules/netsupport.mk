@@ -1397,7 +1397,6 @@ endef
 
 $(eval $(call KernelPackage,nlmon))
 
-
 define KernelPackage/mdio
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=MDIO (clause 45) PHY support
@@ -1531,13 +1530,18 @@ define KernelPackage/netconsole
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=Network console logging support
   KCONFIG:=CONFIG_NETCONSOLE \
-	  CONFIG_NETCONSOLE_DYNAMIC=n
+	  CONFIG_NETCONSOLE_DYNAMIC=y
   FILES:=$(LINUX_DIR)/drivers/net/netconsole.ko
   AUTOLOAD:=$(call AutoProbe,netconsole)
 endef
 
 define KernelPackage/netconsole/description
-  Network console logging support.
+  Log kernel messager over the network. Further documentation\\\
+  available in the Linux kernel sources.\\\
+  You have to run make kernel_menuconfig and add the following\\\
+  line manually (with the correct vaules), in "Kernel Hacking",\\\
+  or in the bootloader configuration.\\\
+  netconsole=[src-port]@[src-ip]/[<dev>],[tgt-port]@<tgt-ip>/[tgt-macaddr] 
 endef
 
 $(eval $(call KernelPackage,netconsole))
