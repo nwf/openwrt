@@ -1124,7 +1124,7 @@
  #endif /* _MV_COMMON_H */
 --- /dev/null
 +++ b/include/configs/pogoplugv4.h
-@@ -0,0 +1,121 @@
+@@ -0,0 +1,122 @@
 +/*
 + * Copyright (C) 2014-2016 bodhi <mibodhi@gmail.com>
 + * Based on
@@ -1178,7 +1178,7 @@
 + */
 +
 +#define CONFIG_KIRKWOOD_GPIO
-+#define CONFIG_PREBOOT
++#define CONFIG_USE_PREBOOT
 +
 +/*
 + * mv-common.h should be defined after CMD configs since it used them
@@ -1189,6 +1189,7 @@
 +/*
 + * Default environment variables
 + */
++#define CONFIG_USE_BOOTCOMMAND
 +#define CONFIG_BOOTCOMMAND \
 +	"usb reset ; " \
 +	"fatload usb 0:1 0x2000000 initramfs.bin ; "\
