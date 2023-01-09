@@ -1306,6 +1306,8 @@ define KernelPackage/rxrpc
   DEPENDS:= \
 	+kmod-crypto-manager \
 	+kmod-crypto-user \
+	+kmod-crypto-hmac \
+	+kmod-crypto-md5 \
 	+kmod-crypto-pcbc \
 	+kmod-crypto-fcrypt \
 	+kmod-udptunnel4 \
