@@ -1,0 +1,11 @@
+--- ncurses-6.4/include/edit_cfg.sh.orig	2023-01-09 03:08:54.748499413 +0000
++++ ncurses-6.4/include/edit_cfg.sh	2023-01-09 03:21:04.073102575 +0000
+@@ -47,7 +47,7 @@
+ 	HAVE_TERMIO_H \
+ 	BROKEN_LINKER
+ do
+-	mv "$2" "$BAK"
++	mv -f "$2" "$BAK"
+ 	if ( grep "[ 	]${name}[ 	]" "$1" >$TMP 2>&1 )
+ 	then
+ 		value=1
