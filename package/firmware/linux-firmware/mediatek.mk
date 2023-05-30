@@ -7,6 +7,16 @@ define Package/mt7601u-firmware/install
 endef
 $(eval $(call BuildPackage,mt7601u-firmware))
 
+Package/mt7610e-firmware = $(call Package/firmware-default,MediaTek MT7610E firmware)
+define Package/mt7610e-firmware/install
+	$(INSTALL_DIR) $(1)/lib/firmware
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/mediatek/mt7610e.bin \
+		$(1)/lib/firmware
+endef
+$(eval $(call BuildPackage,mt7610e-firmware))
+
+
 Package/rt2800-pci-firmware = $(call Package/firmware-default,Ralink RT28xx/3xxx PCI/SoC firmware)
 define Package/rt2800-pci-firmware/install
 	$(INSTALL_DIR) $(1)/lib/firmware
