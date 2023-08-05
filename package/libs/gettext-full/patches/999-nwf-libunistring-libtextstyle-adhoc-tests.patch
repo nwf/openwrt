@@ -1,0 +1,11 @@
+--- a/libtextstyle/adhoc-tests/Makefile.am
++++ b/libtextstyle/adhoc-tests/Makefile.am
+@@ -40,7 +40,7 @@ AM_CPPFLAGS = \
+   -DSRCDIR=\"$(srcdir)/\"
+ 
+ # Link dependencies.
+-LDADD = ../lib/libtextstyle.la
++LDADD = ../lib/libtextstyle.la $(LIBUNISTRING)
+ 
+ # Additional files to be distributed.
+ EXTRA_DIST += $(noinst_DATA)
